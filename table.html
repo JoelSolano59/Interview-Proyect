@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+</head>
+<body onLoad="buildHtmlTable('#excelDataTable')">
+  <table id="excelDataTable" border="1">
+  </table>
+  <script>
+    var json = [
+      {
+        "SampleNumber":"12345",
+        "PipelineVersion":"0.0.1",
+        "Sequencer":"iontorrent",
+        "KnowledgebaseVersion":"0.0.1",
+        "DateGenerated":"06/11/2021 2:30PM EST",
+        "CurrentMedications":[
+          {
+            "Drugs":[
+              {
+                "Generic":["Acetaminophen"], 
+                "Trade":["Tylenol"]
+              }
+            ],
+            "TheraputicArea":["Pain Management"],
+            "GeneInfo":[
+              {
+                "Gene":"FakeGene1",
+                "Genotype":"WT/WT",
+                "Phenotype":"Normal Metabolizer"
+              },
+              {
+                "Gene":"FakeGene2",
+                "Genotype":"WT/WT",
+                "Phenotype":"Poor Metabolizer"
+              }
+            ],
+            "GroupPhenotype":"Decreased Efficacy",
+            "Action":["CAUTION"],
+            "Recommendation":"Patients with this genotype are expected to have a Poor response to Tylenol. Physicians should follow FDA label recommendations."
+          }
+        ]
+      }
+    ];
+
+    //Creates the HTML table
+    function table(sel) {
+      var columns = addHeaders(json, sel);
+
+      for (var i = 0; i < json.length; i++) {
+        var row$ = $('<tr/>');
+        for (var col = 0; col < columns.length; col++) {
+          var cell = json[i][columns[col]];
+          if (cell == null) cell = "";
+          row$.append($('<td/>').html(cell));
+        }
+        $(sel).append(row$);
+      }
+    }
+
+    //Adds a header row to the table
+    function addHeaders(json, sel) {
+      var colset = [];
+      var tr$ = $('<tr/>');
+
+      for (var i = 0; i < json.length; i++) {
+        var rowHash = json[i];
+        for (var key in rowHash) {
+          if ($.inArray(key, colset) == -1) {
+            colset.push(key);
+            tr$.append($('<th/>').html(key));
+          }
+        }
+      }
+      $(sel).append(tr$);
+
+      return colset;
+    }
+  </script>
+</body>
+</html>
+
